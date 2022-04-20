@@ -2,15 +2,16 @@ const express = require('express')
 const { Kafka } = require('kafkajs')
 const kafka = new Kafka({
     clientId: 'my-app',
-    brokers: ['kafka:9092'],
+    // brokers: ['kafka:9092'],
+    brokers: ['34.121.86.36:9094'],
 })
 const app = express();
 const port = 3000
-const topic = 'od-logs'
+const topic = 'od-logs-1';
 let messages = [];
 async function consume() {
     // const consumer = kafka.consumer({groupId: 'test-group'});
-    const consumer = kafka.consumer({groupId: 'test-group3'});
+    const consumer = kafka.consumer({groupId: 'test-group3'})
 
     await consumer.connect()
     await consumer.subscribe({topic: topic, fromBeginning: true})
@@ -19,11 +20,16 @@ async function consume() {
     await consumer.run({
         autoCommit:false,
         eachMessage: async ({topic, partition, message}) => {
-            console.log(message.offset)
-            messages.push(message.value.toString());
-            console.log({
-                value: message.value.toString(),
-            })
+            try {
+                console.log(message.offset)
+                messages.push(message.value.toString());
+                console.log({
+                    value: message.value.toString(),
+                })
+            }catch (e) {
+
+            }
+
         },
     })
 }
@@ -42,7 +48,7 @@ app.get('/sendMessage', async (req, res) => {
     await producer.send({
         topic: topic,
         messages: [
-            { value: 'Hello KafkaJS user!' },
+            { key:new Date().toString(),value: `${new Date().toString()}-> Hello KafkaJS user!` },
         ],
     })
 
