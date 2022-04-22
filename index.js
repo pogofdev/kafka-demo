@@ -21,13 +21,23 @@ async function consume() {
         autoCommit:false,
         eachMessage: async ({topic, partition, message}) => {
             try {
-                console.log(message.offset)
+
                 messages.push(message.value.toString());
                 console.log({
                     value: message.value.toString(),
                 })
-            }catch (e) {
 
+                if(parseInt(message.offset)>20){
+                    throw 'bi loi roi'
+                }else {
+                    await consumer.commitOffsets([
+                        { topic: topic, partition, offset: `${parseInt(message.offset)+1}` },
+
+                    ])
+                    console.log(message.offset)
+                }
+            }catch (e) {
+                throw e.toString()
             }
 
         },
