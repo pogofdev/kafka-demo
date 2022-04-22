@@ -3,11 +3,11 @@ const { Kafka } = require('kafkajs')
 const kafka = new Kafka({
     clientId: 'my-app',
     // brokers: ['kafka:9092'],
-    brokers: ['34.121.86.36:9094'],
+    brokers: ['61.14.233.66:9093'],
 })
 const app = express();
 const port = 3000
-const topic = 'od-logs-1';
+const topic = 'od-stream';
 let messages = [];
 async function consume() {
     // const consumer = kafka.consumer({groupId: 'test-group'});
